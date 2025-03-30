@@ -1,0 +1,32 @@
+﻿@model FacultySystem.Models.Course
+
+<h2>Add Student to Course</h2>
+
+<p><strong>Course Title:</strong> @Model.Title</p>
+<p><strong>Credit Hours:</strong> @Model.CreditHours</p>
+
+@if (ViewBag.Trainees.Count > 0)
+{
+    <h3>Select a Student</h3>
+    <form asp-action="AddStudent" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="form-group">
+            <label>Select a Trainee:</label>
+            <select name="traineeId" class="form-control">
+                @foreach (var trainee in ViewBag.Trainees)
+                {
+                    <option value="@trainee.Id">@trainee.Name</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Add Student</button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+    </form>
+}
+else
+{
+    <p class="text-warning">All trainees are already enrolled in this course.</p>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back</a>
+}

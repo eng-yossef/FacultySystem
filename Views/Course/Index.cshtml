@@ -1,0 +1,31 @@
+﻿@model IEnumerable<FacultySystem.Models.Course>
+
+<h2>Courses List</h2>
+<a asp-action="Create" class="btn btn-success">Add Course</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Credit Hours</th>
+            <th>Instructor</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Title</td>
+                <td>@item.CreditHours</td>
+                <td>@item.Instructor.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+					<a asp-action="AddStudent" asp-route-id="@item.Id" class="btn btn-warning">Add Student</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

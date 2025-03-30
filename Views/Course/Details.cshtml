@@ -1,0 +1,17 @@
+﻿@model FacultySystem.Models.Course
+
+<h2>Course Details</h2>
+
+<p><strong>Title:</strong> @Model.Title</p>
+<p><strong>Credit Hours:</strong> @Model.CreditHours</p>
+<p><strong>Instructor:</strong> @Model.Instructor.Name</p>
+
+<h3>Enrolled Trainees</h3>
+<ul>
+    @foreach (var result in Model.CourseResults)
+    {
+        <li>@result.Trainee.Name - Score: @result.Grade</li>
+    }
+</ul>
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>

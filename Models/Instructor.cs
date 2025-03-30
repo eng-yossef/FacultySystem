@@ -1,0 +1,27 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace FacultySystem.Models
+{
+    public class Instructor
+    {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Specialization { get; set; }
+
+        // Foreign Key for Department
+        public int DepartmentId { get; set; }
+
+        // Navigation Property
+        [ForeignKey("DepartmentId")]
+        public Department? Department { get; set; }
+
+        // One-to-Many: Instructor teaches multiple Courses
+
+        public ICollection<Course>? Courses { get; set; }
+    }
+
+}

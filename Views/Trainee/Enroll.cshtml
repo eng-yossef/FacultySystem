@@ -1,0 +1,40 @@
+﻿@model FacultySystem.Models.Trainee
+
+<h2>Enroll Trainee in a Course</h2>
+
+<p><strong>Trainee Name:</strong> @Model.Name</p>
+<p><strong>Age:</strong> @Model.Age</p>
+
+<h3>Current Courses</h3>
+<ul>
+    @foreach (var courseResult in Model.CourseResults)
+    {
+        <li>@courseResult.Course.Title</li>
+    }
+</ul>
+
+@if (ViewBag.Courses.Count > 0)
+{
+    <h3>Enroll in a New Course</h3>
+    <form asp-action="Enroll" method="post">
+        <input type="hidden" name="id" value="@Model.Id" />
+
+        <div class="form-group">
+            <label>Select a Course:</label>
+            <select name="courseId" class="form-control">
+                @foreach (var course in ViewBag.Courses)
+                {
+                    <option value="@course.Id">@course.Title</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enroll</button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+    </form>
+}
+else
+{
+    <p class="text-warning">This trainee is already enrolled in all available courses.</p>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back</a>
+}

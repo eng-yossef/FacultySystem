@@ -1,0 +1,24 @@
+﻿@model FacultySystem.Models.Department
+
+<h2>Department Details</h2>
+
+<p><strong>Name:</strong> @Model.Name</p>
+
+<h3>Instructors</h3>
+<ul>
+    @foreach (var instructor in Model.Instructors ?? new List<FacultySystem.Models.Instructor>())
+    {
+        <li>@instructor.Name (@instructor.Specialization)</li>
+    }
+</ul>
+
+<h3>Trainees</h3>
+<ul>
+    @foreach (var trainee in Model.Trainees ?? new List<FacultySystem.Models.Trainee>())
+    {
+        <li>@trainee.Name (Age: @trainee.Age)</li>
+    }
+</ul>
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>

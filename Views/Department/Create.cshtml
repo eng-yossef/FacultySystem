@@ -1,0 +1,12 @@
+﻿@model FacultySystem.Models.Department
+
+<h2>Create New Department</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Name">Department Name</label>
+        <input asp-for="Name" class="form-control" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
