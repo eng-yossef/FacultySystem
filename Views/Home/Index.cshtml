@@ -1,8 +1,48 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="container-fluid text-white text-center p-5" style="background: linear-gradient(to right, #6a11cb, #2575fc);">
+    <h1 class="display-4 fw-bold">Welcome to the Faculty System</h1>
+    <p class="lead">Manage instructors, trainees, and courses effortlessly with our easy-to-use platform.</p>
+    <a asp-controller="Instructor" asp-action="Index" class="btn btn-light btn-lg mt-3">View Instructors</a>
+</div>
+
+<!-- Features Section -->
+<div class="container text-center my-5">
+    <h2 class="mb-4">What You Can Do</h2>
+    <div class="row">
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-lg border-0 p-4">
+                <i class="bi bi-people display-4 text-primary"></i>
+                <h4 class="mt-3">Manage Instructors</h4>
+                <p>Add, edit, and remove instructors with ease.</p>
+                <a asp-controller="Instructor" asp-action="Index" class="btn btn-primary">Go to Instructors</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-lg border-0 p-4">
+                <i class="bi bi-journal-bookmark display-4 text-success"></i>
+                <h4 class="mt-3">Manage Courses</h4>
+                <p>Create and assign courses to instructors and trainees.</p>
+                <a asp-controller="Course" asp-action="Index" class="btn btn-success">Go to Courses</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-lg border-0 p-4">
+                <i class="bi bi-person-check display-4 text-danger"></i>
+                <h4 class="mt-3">Manage Trainees</h4>
+                <p>Enroll trainees in courses and track their progress.</p>
+                <a asp-controller="Trainee" asp-action="Index" class="btn btn-danger">Go to Trainees</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="container-fluid text-center text-white p-5" style="background: linear-gradient(to right, #ff416c, #ff4b2b);">
+    <h2>Get Started Today!</h2>
+    <p class="lead">Manage your faculty with ease and efficiency.</p>
+    <a asp-controller="Instructor" asp-action="Index" class="btn btn-light btn-lg">Explore Now</a>
 </div>

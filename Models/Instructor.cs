@@ -9,8 +9,14 @@ namespace FacultySystem.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
         public int Id { get; set; }
+
+        [Required]
         public string Name { get; set; }
+
         public string Specialization { get; set; }
+
+        // New Property for Image URL
+        public string? ImageUrl { get; set; }
 
         // Foreign Key for Department
         public int DepartmentId { get; set; }
@@ -20,8 +26,6 @@ namespace FacultySystem.Models
         public Department? Department { get; set; }
 
         // One-to-Many: Instructor teaches multiple Courses
-
         public ICollection<Course>? Courses { get; set; }
     }
-
 }

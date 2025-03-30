@@ -4,6 +4,17 @@
 
 <p><strong>Name:</strong> @Model.Name</p>
 <p><strong>Specialization:</strong> @Model.Specialization</p>
-<p><strong>Department:</strong> @Model.Department.Name</p>
+<p><strong>Department:</strong> @(Model.Department?.Name ?? "Not Assigned")</p>
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <p><strong>Image:</strong></p>
+    <img src="@Model.ImageUrl" alt="Instructor Image" style="width:150px; height:auto; border-radius:10px;" />
+}
+else
+{
+    <p>No image available</p>
+}
 
 <a asp-action="Index" class="btn btn-secondary">Back</a>
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
