@@ -4,9 +4,11 @@ using FacultySystem.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FacultySystem.Controllers
 {
+    [Authorize]
     public class InstructorController : Controller
     {
         private readonly FacultyDbContext _context;
@@ -21,6 +23,7 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Instructor (List of Instructors)
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var instructors = await _context.Instructors.Include(i => i.Department).ToListAsync();

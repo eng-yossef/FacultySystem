@@ -2,9 +2,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FacultySystem.Models
 {
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
 
-    public class FacultyDbContext : DbContext
+    public class FacultyDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Department> Departments { get; set; }
         public DbSet<Instructor> Instructors { get; set; }
@@ -19,6 +21,14 @@ namespace FacultySystem.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+                // Call Identity's model configurations FIRST
+    base.OnModelCreating(modelBuilder);
+
+            // Explicitly set the composite key for IdentityUserLogin<string>
+            modelBuilder.Entity<IdentityUserLogin<string>>()
+                .HasKey(l => new { l.LoginProvider, l.ProviderKey });
+
+
             // Composite Key for CourseResult (TraineeId + CourseId)
             modelBuilder.Entity<CourseResult>()
                 .HasKey(cr => new { cr.TraineeId, cr.CourseId });

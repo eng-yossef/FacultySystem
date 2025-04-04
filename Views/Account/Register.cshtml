@@ -1,0 +1,21 @@
+﻿@model FacultySystem.ViewModels.RegisterViewModel
+
+<h2>Register</h2>
+<form asp-action="Register" method="post">
+    <!-- Shows all errors in a list -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <input asp-for="FullName" placeholder="Full Name" />
+    <span asp-validation-for="FullName" class="text-danger"></span>
+
+    <input asp-for="Email" placeholder="Email" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+
+    <input asp-for="Password" type="password" placeholder="Password" />
+    <span asp-validation-for="Password" class="text-danger"></span>
+
+    <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" />
+    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+    <button type="submit">Register</button>
+</form>

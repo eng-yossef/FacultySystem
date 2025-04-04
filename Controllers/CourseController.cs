@@ -4,10 +4,13 @@ using FacultySystem.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using FacultySystem.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FacultySystem.Controllers
 {
     [CustomActionFilter]
+    [Authorize(Roles = "Admin")]
+
     public class CourseController : Controller
     {
 
@@ -19,6 +22,7 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Course (List all courses)
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var courses = await _context.Courses.Include(c => c.Instructor).ToListAsync();

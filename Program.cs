@@ -1,5 +1,5 @@
-using FacultySystem.Filters;
 using FacultySystem.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace FacultySystem
@@ -10,20 +10,28 @@ namespace FacultySystem
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
             // Add DbContext with connection string from appsettings.json
             builder.Services.AddDbContext<FacultyDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Correct Identity configuration with roles support
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                // Password settings
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<FacultyDbContext>()
+            .AddDefaultTokenProviders();
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
-            // Add custom action filter globally
-
-            //builder.Services.AddControllersWithViews(options =>
-            //{
-            //    options.Filters.Add<HandleErrorAttribute>();
-            //});
 
             var app = builder.Build();
 
@@ -31,20 +39,16 @@ namespace FacultySystem
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
-            // Configure the app to use MVC pattern 
 
             app.MapControllerRoute(
                 name: "default",

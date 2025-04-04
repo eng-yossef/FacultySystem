@@ -1,0 +1,93 @@
+﻿@model FacultySystem.Models.RemoveRoleViewModel
+@{
+    ViewData["Title"] = "Remove Role from User";
+}
+
+<div class="container mt-4">
+    <h2>@ViewData["Title"]</h2>
+    <hr />
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Remove" method="post" id="removeRoleForm">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="UserEmail" class="control-label"></label>
+                    <select asp-for="UserEmail" asp-items="Model.Users" class="form-select" id="userSelect">
+                        <option value="">-- Select User --</option>
+                    </select>
+                    <span asp-validation-for="UserEmail" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="RoleName" class="control-label"></label>
+                    <select asp-for="RoleName" asp-items="Model.Roles" class="form-select" id="roleSelect">
+                        <option value="">-- Select Role --</option>
+                    </select>
+                    <span asp-validation-for="RoleName" class="text-danger"></span>
+                    <div id="roleWarning" class="text-warning mt-2" style="display:none;">
+                        User doesn't have this role
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-danger">Remove Role</button>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            $('#userSelect').change(function() {
+                var email = $(this).val();
+                if (email) {
+                    $.getJSON('/Role/GetUserRoles', { email: email }, function(data) {
+                        if (data.success) {
+                            // Enable all role options
+                            $('#roleSelect option').prop('disabled', false);
+
+                            // Disable roles the user doesn't have
+                            $('#roleSelect option').each(function() {
+                                var roleName = $(this).val();
+                                if (roleName && !data.roles.includes(roleName)) {
+                                    $(this).prop('disabled', true);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#roleSelect').change(function() {
+                var selectedRole = $(this).val();
+                var email = $('#userSelect').val();
+
+                if (email && selectedRole) {
+                    $.getJSON('/Role/GetUserRoles', { email: email }, function(data) {
+                        if (data.success) {
+                            if (data.roles.includes(selectedRole)) {
+                                $('#roleWarning').hide();
+                            } else {
+                                $('#roleWarning').show();
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
