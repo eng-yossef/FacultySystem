@@ -1,3 +1,4 @@
+using FacultySystem.Filters;
 using FacultySystem.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,13 @@ namespace FacultySystem
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Add custom action filter globally
+
+            //builder.Services.AddControllersWithViews(options =>
+            //{
+            //    options.Filters.Add<HandleErrorAttribute>();
+            //});
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -27,12 +35,16 @@ namespace FacultySystem
                 app.UseHsts();
             }
 
+
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            // Configure the app to use MVC pattern 
 
             app.MapControllerRoute(
                 name: "default",

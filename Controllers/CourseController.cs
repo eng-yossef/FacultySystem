@@ -3,11 +3,14 @@ using Microsoft.EntityFrameworkCore;
 using FacultySystem.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using FacultySystem.Filters;
 
 namespace FacultySystem.Controllers
 {
+    [CustomActionFilter]
     public class CourseController : Controller
     {
+
         private readonly FacultyDbContext _context;
 
         public CourseController(FacultyDbContext context)
