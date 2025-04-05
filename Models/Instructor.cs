@@ -19,7 +19,7 @@ namespace FacultySystem.Models
         public string? ImageUrl { get; set; }
 
         // Foreign Key for Department
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
         // Navigation Property
         [ForeignKey("DepartmentId")]

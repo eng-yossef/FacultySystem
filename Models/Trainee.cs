@@ -12,7 +12,7 @@ namespace FacultySystem.Models
         public int Age { get; set; }
 
         // Foreign Key for Department
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
         // Navigation Property
         [ForeignKey("DepartmentId")]

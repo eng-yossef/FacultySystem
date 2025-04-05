@@ -43,23 +43,30 @@ namespace FacultySystem.Models
                 .HasOne(cr => cr.Course)
                 .WithMany(c => c.CourseResults)
                 .HasForeignKey(cr => cr.CourseId)
-                .OnDelete(DeleteBehavior.Restrict);  // Change from Cascade to Restrict
+                .OnDelete(DeleteBehavior.Restrict);  // Prevents the deletion of an Instructor if there are any related Courses.
 
-            // One-to-Many Relationships
+            // Instructor - Department relationship
             modelBuilder.Entity<Instructor>()
                 .HasOne(i => i.Department)
                 .WithMany(d => d.Instructors)
-                .HasForeignKey(i => i.DepartmentId);
+                .HasForeignKey(i => i.DepartmentId)
+                .OnDelete(DeleteBehavior.SetNull); // Set DepartmentId to null in Instructors when Department is deleted
 
+            // Trainee - Department relationship
             modelBuilder.Entity<Trainee>()
                 .HasOne(t => t.Department)
                 .WithMany(d => d.Trainees)
-                .HasForeignKey(t => t.DepartmentId);
+                .HasForeignKey(t => t.DepartmentId)
+                .OnDelete(DeleteBehavior.SetNull); // Set DepartmentId to null in Trainees when Department is deleted
+
 
             modelBuilder.Entity<Course>()
-                .HasOne(c => c.Instructor)
-                .WithMany(i => i.Courses)
-                .HasForeignKey(c => c.InstructorId);
+      .HasOne(c => c.Instructor)
+      .WithMany(i => i.Courses)
+      .HasForeignKey(c => c.InstructorId)
+      .OnDelete(DeleteBehavior.SetNull);
+
+
         }
     }
 

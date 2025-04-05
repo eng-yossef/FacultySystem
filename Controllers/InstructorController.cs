@@ -186,6 +186,7 @@ namespace FacultySystem.Controllers
 
             var instructor = await _context.Instructors
                 .Include(i => i.Department)
+                .Include(i => i.Courses)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (instructor == null) return NotFound();
