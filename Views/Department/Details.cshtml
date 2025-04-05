@@ -1,24 +1,191 @@
 ﻿@model FacultySystem.Models.Department
+@{
+    ViewData["Title"] = "Department Details";
+}
 
-<h2>Department Details</h2>
+<div class="container py-5">
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">
+                    <i class="fas fa-building me-2"></i>@ViewData["Title"]
+                </h2>
+                <a asp-action="Index" class="btn btn-sm btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back to List
+                </a>
+            </div>
+        </div>
 
-<p><strong>Name:</strong> @Model.Name</p>
+        <!-- Card Body -->
+        <div class="card-body p-4">
+            <!-- Department Information -->
+            <div class="mb-4 p-3 bg-light rounded-2">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-info-circle me-2 text-primary"></i>Basic Information
+                </h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="mb-0"><strong>Name:</strong> @Model.Name</p>
+                    </div>
+                </div>
+            </div>
 
-<h3>Instructors</h3>
-<ul>
-    @foreach (var instructor in Model.Instructors ?? new List<FacultySystem.Models.Instructor>())
-    {
-        <li>@instructor.Name (@instructor.Specialization)</li>
-    }
-</ul>
+            <!-- Instructors Section -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="h5 mb-0">
+                        <i class="fas fa-chalkboard-teacher me-2"></i>Instructors
+                    </h3>
+                    <a asp-controller="Instructor" asp-action="Create" class="btn btn-sm btn-success">
+                        <i class="fas fa-plus me-1"></i>Add Instructor
+                    </a>
+                </div>
 
-<h3>Trainees</h3>
-<ul>
-    @foreach (var trainee in Model.Trainees ?? new List<FacultySystem.Models.Trainee>())
-    {
-        <li>@trainee.Name (Age: @trainee.Age)</li>
-    }
-</ul>
+                @if (Model.Instructors?.Any() == true)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Specialization</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var instructor in Model.Instructors)
+                                {
+                                    <tr>
+                                        <td>@instructor.Name</td>
+                                        <td>@instructor.Specialization</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a asp-controller="Instructor" asp-action="Edit" asp-route-id="@instructor.Id"
+                                                   class="btn btn-sm btn-outline-primary" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-controller="Instructor" asp-action="Details" asp-route-id="@instructor.Id"
+                                                   class="btn btn-sm btn-outline-info" title="Details">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle me-3"></i>
+                            <div>
+                                <p class="mb-0">No instructors currently assigned to this department.</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
 
-<a asp-action="Index" class="btn btn-secondary">Back</a>
-<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+            <!-- Trainees Section -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="h5 mb-0">
+                        <i class="fas fa-users me-2"></i>Trainees
+                    </h3>
+                    <a asp-controller="Trainee" asp-action="Create" class="btn btn-sm btn-success">
+                        <i class="fas fa-plus me-1"></i>Add Trainee
+                    </a>
+                </div>
+
+                @if (Model.Trainees?.Any() == true)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var trainee in Model.Trainees)
+                                {
+                                    <tr>
+                                        <td>@trainee.Name</td>
+                                        <td>@trainee.Age</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a asp-controller="Trainee" asp-action="Edit" asp-route-id="@trainee.Id"
+                                                   class="btn btn-sm btn-outline-primary" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a asp-controller="Trainee" asp-action="Details" asp-route-id="@trainee.Id"
+                                                   class="btn btn-sm btn-outline-info" title="Details">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle me-3"></i>
+                            <div>
+                                <p class="mb-0">No trainees currently enrolled in this department.</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end gap-3 mt-4">
+                <a asp-action="Index" class="btn btn-secondary px-4">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Departments
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4">
+                    <i class="fas fa-edit me-2"></i>Edit Department
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 0.75rem;
+        }
+
+        .card-header {
+            border-radius: 0 !important;
+        }
+
+        .fw-bold {
+            font-weight: 600;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+        }
+    </style>
+}

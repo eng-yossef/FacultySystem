@@ -1,34 +1,149 @@
 ﻿@model FacultySystem.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login to Faculty System";
+}
 
-<h2>Login</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8">
+            <div class="card border-0 shadow-lg rounded-3 overflow-hidden">
+                <!-- Card Header -->
+                <div class="card-header bg-primary text-white py-4">
+                    <div class="text-center">
+                        <i class="fas fa-user-lock fa-3x mb-3"></i>
+                        <h2 class="fw-bold mb-0">Faculty Portal Login</h2>
+                    </div>
+                </div>
 
-<!-- Validation Summary (shows all errors at top) -->
-<div asp-validation-summary="All" class="text-danger"></div>
+                <!-- Card Body -->
+                <div class="card-body p-5">
+                    <!-- Validation Summary -->
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+                    </div>
 
-<form asp-action="Login" method="post">
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" placeholder="Email" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+                    <form asp-action="Login" method="post" class="needs-validation" novalidate>
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label fw-semibold">
+                                <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-at"></i>
+                                </span>
+                                <input asp-for="Email" class="form-control py-2" placeholder="Enter your email" required />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label fw-semibold">
+                                <i class="fas fa-lock me-2 text-primary"></i>Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                                <input asp-for="Password" type="password" class="form-control py-2" placeholder="Enter your password" required />
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="mb-4 form-check">
+                            <input asp-for="RememberMe" class="form-check-input" type="checkbox" />
+                            <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-2">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </button>
+                        </div>
+
+                        <!-- Links -->
+                        <div class="text-center">
+                            <a href="#" class="text-decoration-none">Forgot password?</a>
+                            <span class="mx-2 text-muted">|</span>
+                            <a asp-action="Register" asp-controller="Account" class="text-decoration-none">Create account</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+@section Styles {
+    <style>
+        .card {
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
 
-    <div class="form-group form-check">
-        <input asp-for="RememberMe" type="checkbox" class="form-check-input" />
-        <label asp-for="RememberMe" class="form-check-label">Remember me</label>
-    </div>
+        .card-header {
+            border-radius: 0 !important;
+        }
 
-    <button type="submit" class="btn btn-primary">Login</button>
-</form>
+        .form-control {
+            border-left: 0;
+        }
 
-<!-- Include jQuery Validation scripts (required for client-side validation) -->
+        .input-group-text {
+            background-color: transparent;
+            border-right: 0;
+        }
+
+        .toggle-password {
+            border-left: 0;
+        }
+
+        .fw-semibold {
+            font-weight: 500;
+        }
+    </style>
+}
+
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        $(document).ready(function() {
+            // Toggle password visibility
+            $('.toggle-password').click(function() {
+                const input = $(this).siblings('input');
+                const icon = $(this).find('i');
+                const type = input.attr('type') === 'password' ? 'text' : 'password';
+                input.attr('type', type);
+                icon.toggleClass('fa-eye fa-eye-slash');
+            });
+
+            // Close validation alert
+            $('.btn-close').click(function() {
+                $(this).closest('.alert').fadeOut();
+            });
+
+            // Bootstrap 5 validation
+            (function () {
+                'use strict'
+                const forms = document.querySelectorAll('.needs-validation')
+                Array.from(forms).forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+            })()
+        });
+    </script>
 }

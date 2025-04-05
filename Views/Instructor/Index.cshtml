@@ -1,30 +1,106 @@
 ﻿@model IEnumerable<FacultySystem.Models.Instructor>
+@{
+    ViewData["Title"] = "Instructors Management";
+}
 
-<h2 class="text-center mb-4">Instructors List</h2>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold text-primary">
+            <i class="fas fa-chalkboard-teacher me-2"></i>@ViewData["Title"]
+        </h2>
+        <a asp-action="Create" class="btn btn-success btn-lg">
+            <i class="fas fa-user-plus me-2"></i>Add Instructor
+        </a>
+    </div>
 
-<div class="text-center mb-3">
-    <a asp-action="Create" class="btn btn-success btn-lg">Add Instructor</a>
-</div>
-
-<div class="row">
-    @foreach (var item in Model)
+    @if (!Model.Any())
     {
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card shadow-lg mb-4" style="height: 100%; border-radius: 15px; overflow: hidden;">
-                <img src="@item.ImageUrl" class="card-img-top img-fluid" style="height: 300px; object-fit: cover;" alt="@item.Name">
-                <div class="card-body d-flex flex-column justify-content-between text-center">
-                    <div>
-                        <h4 class="card-title">@item.Name</h4>
-                        <p class="card-text"><strong>Specialization:</strong> @item.Specialization</p>
-                        <p class="card-text"><strong>Department:</strong> @item.Department?.Name</p>
-                    </div>
-                    <div class="d-flex justify-content-center mt-3">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary me-2">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info me-2">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+        <div class="alert alert-info text-center py-4">
+            <i class="fas fa-info-circle me-2"></i>No instructors found. Add your first instructor!
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var item in Model)
+            {
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="card h-100 border-0 shadow-lg hover-lift">
+                        <div class="card-img-top position-relative overflow-hidden" style="height: 280px;">
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/default-instructor.jpg" : item.ImageUrl)"
+                                 class="img-fluid w-100 h-100 object-fit-cover"
+                                 alt="@item.Name"
+                                 onerror="this.src='/images/default-instructor.jpg'">
+                            <div class="position-absolute bottom-0 start-0 end-0 p-3 bg-gradient-dark-transparent">
+                                <h4 class="text-white mb-0">@item.Name</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-star text-warning me-3 fs-5"></i>
+                                    <div>
+                                        <h6 class="mb-0 text-muted">Specialization</h6>
+                                        <p class="mb-0 fw-bold">@item.Specialization</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-building text-primary me-3 fs-5"></i>
+                                    <div>
+                                        <h6 class="mb-0 text-muted">Department</h6>
+                                        <p class="mb-0 fw-bold">@item.Department?.Name</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0 pt-0">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary flex-grow-1"
+                                   title="Edit">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-info flex-grow-1"
+                                   title="Details">
+                                    <i class="fas fa-info-circle me-1"></i>Details
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-danger flex-grow-1"
+                                   title="Delete"
+                                >                                    <i class="fas fa-trash-alt me-1"></i>Delete
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
     }
 </div>
+
+@section Styles {
+    <style>
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+
+            .hover-lift:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 1rem 2.5rem rgba(0,0,0,.15) !important;
+            }
+
+        .bg-gradient-dark-transparent {
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+        }
+
+        .object-fit-cover {
+            object-fit: cover;
+        }
+
+        .card {
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+    </style>
+}

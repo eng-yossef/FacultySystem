@@ -1,48 +1,229 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Faculty Management System";
 }
 
 <!-- Hero Section -->
-<div class="container-fluid text-white text-center p-5" style="background: linear-gradient(to right, #6a11cb, #2575fc);">
-    <h1 class="display-4 fw-bold">Welcome to the Faculty System</h1>
-    <p class="lead">Manage instructors, trainees, and courses effortlessly with our easy-to-use platform.</p>
-    <a asp-controller="Instructor" asp-action="Index" class="btn btn-light btn-lg mt-3">View Instructors</a>
-</div>
-
-<!-- Features Section -->
-<div class="container text-center my-5">
-    <h2 class="mb-4">What You Can Do</h2>
-    <div class="row">
-        <div class="col-lg-4 col-md-6">
-            <div class="card shadow-lg border-0 p-4">
-                <i class="bi bi-people display-4 text-primary"></i>
-                <h4 class="mt-3">Manage Instructors</h4>
-                <p>Add, edit, and remove instructors with ease.</p>
-                <a asp-controller="Instructor" asp-action="Index" class="btn btn-primary">Go to Instructors</a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="card shadow-lg border-0 p-4">
-                <i class="bi bi-journal-bookmark display-4 text-success"></i>
-                <h4 class="mt-3">Manage Courses</h4>
-                <p>Create and assign courses to instructors and trainees.</p>
-                <a asp-controller="Course" asp-action="Index" class="btn btn-success">Go to Courses</a>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="card shadow-lg border-0 p-4">
-                <i class="bi bi-person-check display-4 text-danger"></i>
-                <h4 class="mt-3">Manage Trainees</h4>
-                <p>Enroll trainees in courses and track their progress.</p>
-                <a asp-controller="Trainee" asp-action="Index" class="btn btn-danger">Go to Trainees</a>
+<section class="hero-section text-white text-center position-relative overflow-hidden">
+    <div class="container py-5 position-relative z-index-1">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Faculty Management System</h1>
+                <p class="lead mb-5">Streamline your academic operations with our comprehensive management platform for instructors, trainees, courses, and departments.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-controller="Instructor" asp-action="Index" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-chalkboard-teacher me-2"></i>Instructors
+                    </a>
+                    <a asp-controller="Trainee" asp-action="Index" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-users me-2"></i>Trainees
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="hero-wave"></div>
+</section>
 
-<!-- Call to Action -->
-<div class="container-fluid text-center text-white p-5" style="background: linear-gradient(to right, #ff416c, #ff4b2b);">
-    <h2>Get Started Today!</h2>
-    <p class="lead">Manage your faculty with ease and efficiency.</p>
-    <a asp-controller="Instructor" asp-action="Index" class="btn btn-light btn-lg">Explore Now</a>
-</div>
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Powerful Features</h2>
+            <p class="lead text-muted">Everything you need to manage your faculty efficiently</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Instructor Management -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle bg-primary-light text-primary mb-4">
+                            <i class="fas fa-chalkboard-teacher fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">Instructor Management</h4>
+                        <p class="text-muted">Easily manage instructor profiles, assignments, and department affiliations.</p>
+                        <a asp-controller="Instructor" asp-action="Index" class="btn btn-sm btn-outline-primary mt-2">
+                            Explore <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trainee Management -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle bg-success-light text-success mb-4">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">Trainee Management</h4>
+                        <p class="text-muted">Enroll trainees, track progress, and manage course registrations.</p>
+                        <a asp-controller="Trainee" asp-action="Index" class="btn btn-sm btn-outline-success mt-2">
+                            Explore <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Management -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle bg-info-light text-info mb-4">
+                            <i class="fas fa-book-open fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">Course Management</h4>
+                        <p class="text-muted">Create courses, assign instructors, and manage curriculum.</p>
+                        <a asp-controller="Course" asp-action="Index" class="btn btn-sm btn-outline-info mt-2">
+                            Explore <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Department Management -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="icon-circle bg-warning-light text-warning mb-4">
+                            <i class="fas fa-building fa-2x"></i>
+                        </div>
+                        <h4 class="mb-3">Department Management</h4>
+                        <p class="text-muted">Organize faculty structure with departments and specializations.</p>
+                        <a asp-controller="Department" asp-action="Index" class="btn btn-sm btn-outline-warning mt-2">
+                            Explore <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold text-primary">100+</h2>
+                    <p class="mb-0 fw-semibold">Instructors</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold text-success">500+</h2>
+                    <p class="mb-0 fw-semibold">Trainees</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold text-info">50+</h2>
+                    <p class="mb-0 fw-semibold">Courses</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="p-4">
+                    <h2 class="display-4 fw-bold text-warning">10+</h2>
+                    <p class="mb-0 fw-semibold">Departments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-dark text-white">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="fw-bold mb-4">Ready to Transform Your Faculty Management?</h2>
+                <p class="lead mb-5">Join hundreds of institutions using our platform to streamline their academic operations.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-controller="Instructor" asp-action="Create" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-plus-circle me-2"></i>Add New Instructor
+                    </a>
+                    <a asp-controller="Trainee" asp-action="Create" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-user-plus me-2"></i>Add New Trainee
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .hero-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23f8f9fa' fill-opacity='1' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") no-repeat;
+            background-size: cover;
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bg-primary-light {
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+
+        .bg-success-light {
+            background-color: rgba(25, 135, 84, 0.1);
+        }
+
+        .bg-info-light {
+            background-color: rgba(13, 202, 240, 0.1);
+        }
+
+        .bg-warning-light {
+            background-color: rgba(255, 193, 7, 0.1);
+        }
+
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+
+            .hover-lift:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+            }
+
+        .fw-semibold {
+            font-weight: 500;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Animation for stats counter
+        $(document).ready(function() {
+            $('.display-4').each(function() {
+                $(this).prop('Counter', 0).animate({
+                    Counter: $(this).text().replace('+', '')
+                }, {
+                    duration: 2000,
+                    easing: 'swing',
+                    step: function(now) {
+                        $(this).text(Math.ceil(now) + '+');
+                    }
+                });
+            });
+        });
+    </script>
+}

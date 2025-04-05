@@ -1,38 +1,204 @@
 ﻿@model FacultySystem.Models.Instructor
+@{
+    ViewData["Title"] = "Edit Instructor";
+}
 
-<h2>Edit Instructor</h2>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <!-- Card Header -->
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0">
+                            <i class="fas fa-user-edit me-2"></i>@ViewData["Title"]
+                        </h2>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-light">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                    </div>
+                </div>
 
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+                <!-- Card Body -->
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post" class="needs-validation" novalidate enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
-        <label>Name</label>
-        <input asp-for="Name" class="form-control" required />
+                        <!-- Name Field -->
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                <i class="fas fa-user me-2 text-primary"></i>Full Name
+                            </label>
+                            <input asp-for="Name" class="form-control form-control-lg" required />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                            <div class="invalid-feedback">
+                                Please provide the instructor's name
+                            </div>
+                        </div>
+
+                        <!-- Specialization Field -->
+                        <div class="mb-4">
+                            <label asp-for="Specialization" class="form-label fw-semibold">
+                                <i class="fas fa-star me-2 text-primary"></i>Specialization
+                            </label>
+                            <input asp-for="Specialization" class="form-control form-control-lg"
+                                   placeholder="Enter area of expertise" />
+                            <span asp-validation-for="Specialization" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Department Selection -->
+                        <div class="mb-4">
+                            <label asp-for="DepartmentId" class="form-label fw-semibold">
+                                <i class="fas fa-building me-2 text-primary"></i>Department
+                            </label>
+                            <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-select form-select-lg" required>
+                                <option value="" selected disabled>-- Select Department --</option>
+                            </select>
+                            <span asp-validation-for="DepartmentId" class="text-danger small"></span>
+                            <div class="invalid-feedback">
+                                Please select a department
+                            </div>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-image me-2 text-primary"></i>Profile Image
+                            </label>
+
+                            <!-- Current Image -->
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <div class="mb-3">
+                                    <p class="fw-semibold">Current Image:</p>
+                                    <img src="@Model.ImageUrl" class="img-thumbnail rounded-circle mb-2"
+                                         style="width: 150px; height: 150px; object-fit: cover;"
+                                         alt="Current instructor image" />
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="removeImage" id="removeImage" value="true">
+                                        <label class="form-check-label" for="removeImage">
+                                            Remove current image
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+
+                            <!-- New Image Upload -->
+                            <div class="file-upload-wrapper">
+                                <input type="file" name="imageFile" class="form-control form-control-lg"
+                                       accept="image/*"
+                                       onchange="previewImage(this)" />
+                                <small class="form-text text-muted">Leave blank to keep current image</small>
+                                <div id="imagePreview" class="mt-3 text-center" style="display:none;">
+                                    <p class="fw-semibold">New Image Preview:</p>
+                                    <img id="preview" class="img-thumbnail rounded-circle"
+                                         style="width: 150px; height: 150px; object-fit: cover;" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-end gap-3 mt-4">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary px-4">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-save me-2"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label>Specialization</label>
-        <input asp-for="Specialization" class="form-control" />
-    </div>
+@section Styles {
+    <style>
+        .card {
+            border-radius: 0.75rem;
+        }
 
-    <div class="form-group">
-        <label>Department</label>
-        <select asp-for="DepartmentId" asp-items="ViewBag.Departments" class="form-control" required>
-            <option value="">-- Select Department --</option>
-        </select>
-    </div>
+        .card-header {
+            border-radius: 0 !important;
+        }
 
-    <div class="form-group">
-        <label>Upload New Image</label>
-        <input type="file" name="imageFile" class="form-control" accept="image/*" />
-    </div>
+        .fw-semibold {
+            font-weight: 500;
+        }
 
-    @if (!string.IsNullOrEmpty(Model.ImageUrl))
-    {
-        <p>Current Image:</p>
-        <img src="@Model.ImageUrl" alt="Instructor Image" style="width:150px; height:auto; border-radius:10px;" />
+        .form-control-lg, .form-select-lg {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+
+        .invalid-feedback {
+            display: none;
+            width: 100%;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+            color: #dc3545;
+        }
+
+        .was-validated .form-control:invalid ~ .invalid-feedback,
+        .was-validated .form-select:invalid ~ .invalid-feedback {
+            display: block;
+        }
+
+        .img-thumbnail {
+            border: 3px solid #f8f9fa;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .rounded-circle {
+            border-radius: 50% !important;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+            transition: all 0.3s ease;
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Image preview functionality
+        function previewImage(input) {
+            const preview = document.getElementById('preview');
+            const previewContainer = document.getElementById('imagePreview');
 
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        // Bootstrap 5 validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+}

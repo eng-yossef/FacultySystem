@@ -3,70 +3,94 @@
     ViewData["Title"] = "Role Management";
 }
 
-<div class="container mt-4">
+<div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">@ViewData["Title"]</h2>
-        <div class="d-flex align-items-center">
-            <span class="badge bg-primary me-3">Welcome, @User.Identity.Name</span>
-            <a asp-action="Create" class="btn btn-primary me-2">
-                <i class="fas fa-plus-circle"></i> Create Role
+        <div>
+            <h2 class="fw-bold text-primary mb-0">
+                <i class="fas fa-user-shield me-2"></i>@ViewData["Title"]
+            </h2>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <div class="badge bg-primary p-2">
+                <i class="fas fa-user me-2"></i>@User.Identity?.Name
+            </div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Create Role
             </a>
         </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Role List</h5>
-            <div>
-                <a asp-action="Assign" class="btn btn-sm btn-success me-2">
-                    <i class="fas fa-user-plus"></i> Assign Role
-                </a>
-                <a asp-action="Remove" class="btn btn-sm btn-warning">
-                    <i class="fas fa-user-minus"></i> Remove Role
-                </a>
+    <div class="card border-0 shadow-lg">
+        <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-list-check me-2"></i>Role List
+                </h5>
+                <div class="d-flex gap-2">
+                    <a asp-action="Assign" class="btn btn-success btn-sm">
+                        <i class="fas fa-user-plus me-1"></i>Assign Role
+                    </a>
+                    <a asp-action="Remove" class="btn btn-warning btn-sm">
+                        <i class="fas fa-user-minus me-1"></i>Remove Role
+                    </a>
+                </div>
             </div>
         </div>
 
-        <div class="card-body">
+        <div class="card-body p-0">
             @if (TempData["Message"] != null)
             {
-                <div class="alert alert-info alert-dismissible fade show">
-                    @TempData["Message"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <div class="alert alert-info alert-dismissible fade show m-3">
+                    <i class="fas fa-info-circle me-2"></i>@TempData["Message"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
 
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th>Role Name</th>
-                            <th width="150px">Actions</th>
+                            <th class="ps-4">
+                                <i class="fas fa-tag me-2"></i>Role Name
+                            </th>
+                            <th class="pe-4 text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var role in Model)
+                        @if (Model.Any())
                         {
-                            <tr>
-                                <td class="align-middle">
-                                    <span class="badge bg-secondary">@role.Name</span>
-                                </td>
-                                <td>
-                                    <form asp-action="Delete" method="post">
-                                        <input type="hidden" name="id" value="@role.Id" />
-                                        <input type="hidden" name="roleName" value="@role.Name" />
-                                        <button type="submit" class="btn btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure you want to delete the role: @role.Name?');">
-                                            <i class="fas fa-trash-alt"></i> Delete
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
+                            @foreach (var role in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <span class="badge bg-secondary p-2">
+                                            <i class="fas fa-shield-alt me-1"></i>@role.Name
+                                        </span>
+                                    </td>
+                                    <td class="pe-4 text-end">
+                                        <form asp-action="Delete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@role.Id" />
+                                            <input type="hidden" name="roleName" value="@role.Name" />
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Are you sure you want to permanently delete the @role.Name role?');">
+                                                <i class="fas fa-trash-alt me-1"></i>Delete
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
                         }
-                        @if (!Model.Any())
+                        else
                         {
                             <tr>
-                                <td colspan="2" class="text-center text-muted py-4">No roles found</td>
+                                <td colspan="2" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-inbox fa-2x mb-3"></i>
+                                        <h5>No roles found</h5>
+                                        <p class="mb-0">Create your first role to get started</p>
+                                    </div>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -79,33 +103,44 @@
 @section Styles {
     <style>
         .card {
-            border-radius: 10px;
+            border-radius: 0.75rem;
             overflow: hidden;
+            border: none;
+        }
+
+        .card-header {
+            border-radius: 0 !important;
         }
 
         .table th {
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             letter-spacing: 0.5px;
+            background-color: #f8f9fa;
         }
 
         .badge {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
             font-size: 0.85rem;
-            padding: 0.35em 0.65em;
         }
     </style>
 }
 
 @section Scripts {
     <script>
-        // Add fade out effect for alerts
+        // Auto-dismiss alerts after 5 seconds
         $(document).ready(function() {
             setTimeout(function() {
-                $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $('.alert').fadeTo(500, 0).slideUp(500, function() {
                     $(this).remove();
                 });
-            }, 3000);
+            }, 5000);
         });
     </script>
 }

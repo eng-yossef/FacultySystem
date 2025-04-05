@@ -1,21 +1,180 @@
 ﻿@model FacultySystem.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Create New Account";
+}
 
-<h2>Register</h2>
-<form asp-action="Register" method="post">
-    <!-- Shows all errors in a list -->
-    <div asp-validation-summary="All" class="text-danger"></div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <!-- Card Header -->
+                <div class="card-header bg-primary text-white py-4">
+                    <div class="text-center">
+                        <i class="fas fa-user-plus fa-3x mb-3"></i>
+                        <h2 class="fw-bold mb-0">Create Your Account</h2>
+                    </div>
+                </div>
 
-    <input asp-for="FullName" placeholder="Full Name" />
-    <span asp-validation-for="FullName" class="text-danger"></span>
+                <!-- Card Body -->
+                <div class="card-body p-5">
+                    <!-- Validation Summary -->
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+                    </div>
 
-    <input asp-for="Email" placeholder="Email" />
-    <span asp-validation-for="Email" class="text-danger"></span>
+                    <form asp-action="Register" method="post" class="needs-validation" novalidate>
+                        <!-- Full Name Field -->
+                        <div class="mb-4">
+                            <label asp-for="FullName" class="form-label fw-semibold">
+                                <i class="fas fa-user me-2 text-primary"></i>Full Name
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-id-card"></i>
+                                </span>
+                                <input asp-for="FullName" class="form-control py-2" placeholder="Enter your full name" required />
+                            </div>
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
 
-    <input asp-for="Password" type="password" placeholder="Password" />
-    <span asp-validation-for="Password" class="text-danger"></span>
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label fw-semibold">
+                                <i class="fas fa-envelope me-2 text-primary"></i>Email Address
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-at"></i>
+                                </span>
+                                <input asp-for="Email" class="form-control py-2" placeholder="Enter your email" required />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
 
-    <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" />
-    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        <!-- Password Field -->
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label fw-semibold">
+                                <i class="fas fa-lock me-2 text-primary"></i>Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                                <input asp-for="Password" type="password" class="form-control py-2"
+                                       placeholder="Create a password" required />
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-text small">
+                                Must be at least 6 characters
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
 
-    <button type="submit">Register</button>
-</form>
+                        <!-- Confirm Password Field -->
+                        <div class="mb-4">
+                            <label asp-for="ConfirmPassword" class="form-label fw-semibold">
+                                <i class="fas fa-lock me-2 text-primary"></i>Confirm Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control py-2"
+                                       placeholder="Re-enter your password" required />
+                                <button class="btn btn-outline-secondary toggle-password" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-2">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                            </button>
+                        </div>
+
+                        <!-- Login Link -->
+                        <div class="text-center">
+                            <span class="text-muted">Already have an account?</span>
+                            <a asp-action="Login" asp-controller="Account" class="text-decoration-none ms-2">
+                                Sign In
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-radius: 0 !important;
+        }
+
+        .form-control {
+            border-left: 0;
+        }
+
+        .input-group-text {
+            background-color: transparent;
+            border-right: 0;
+        }
+
+        .toggle-password {
+            border-left: 0;
+        }
+
+        .fw-semibold {
+            font-weight: 500;
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+            // Toggle password visibility
+            $('.toggle-password').click(function() {
+                const input = $(this).siblings('input');
+                const icon = $(this).find('i');
+                const type = input.attr('type') === 'password' ? 'text' : 'password';
+                input.attr('type', type);
+                icon.toggleClass('fa-eye fa-eye-slash');
+            });
+
+            // Close validation alert
+            $('.btn-close').click(function() {
+                $(this).closest('.alert').fadeOut();
+            });
+
+            // Bootstrap 5 validation
+            (function () {
+                'use strict'
+                const forms = document.querySelectorAll('.needs-validation')
+                Array.from(forms).forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+            })()
+        });
+    </script>
+}

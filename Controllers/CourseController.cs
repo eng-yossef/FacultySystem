@@ -152,5 +152,21 @@ namespace FacultySystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new { id });
         }
-    }
+
+
+        //delete student from course
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteStudent(int courseId, int traineeId)
+        {
+            var courseResult = await _context.CourseResults
+                .FirstOrDefaultAsync(cr => cr.CourseId == courseId && cr.TraineeId == traineeId);
+            if (courseResult != null)
+            {
+                _context.CourseResults.Remove(courseResult);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Details), new { id = courseId });    
+        }
+        }
 }

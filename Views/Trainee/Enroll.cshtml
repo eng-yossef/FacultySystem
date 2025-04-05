@@ -1,40 +1,206 @@
 ﻿@model FacultySystem.Models.Trainee
+@{
+    ViewData["Title"] = "Enroll Trainee in Course";
+}
 
-<h2>Enroll Trainee in a Course</h2>
-
-<p><strong>Trainee Name:</strong> @Model.Name</p>
-<p><strong>Age:</strong> @Model.Age</p>
-
-<h3>Current Courses</h3>
-<ul>
-    @foreach (var courseResult in Model.CourseResults)
-    {
-        <li>@courseResult.Course.Title</li>
-    }
-</ul>
-
-@if (ViewBag.Courses.Count > 0)
-{
-    <h3>Enroll in a New Course</h3>
-    <form asp-action="Enroll" method="post">
-        <input type="hidden" name="id" value="@Model.Id" />
-
-        <div class="form-group">
-            <label>Select a Course:</label>
-            <select name="courseId" class="form-control">
-                @foreach (var course in ViewBag.Courses)
-                {
-                    <option value="@course.Id">@course.Title</option>
-                }
-            </select>
+<div class="container py-5">
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">
+                    <i class="fas fa-user-plus me-2"></i>@ViewData["Title"]
+                </h2>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Trainee
+                </a>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Enroll</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+        <!-- Card Body -->
+        <div class="card-body p-4">
+            <!-- Trainee Information -->
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3">
+                    <div class="p-3 bg-light rounded-2">
+                        <h5 class="fw-bold mb-2">
+                            <i class="fas fa-user me-2 text-primary"></i>Trainee Name
+                        </h5>
+                        <p class="mb-0">@Model.Name</p>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="p-3 bg-light rounded-2">
+                        <h5 class="fw-bold mb-2">
+                            <i class="fas fa-calendar-alt me-2 text-primary"></i>Age
+                        </h5>
+                        <p class="mb-0">@Model.Age</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Courses -->
+            <div class="mb-4">
+                <h3 class="h5 mb-3">
+                    <i class="fas fa-book me-2"></i>Current Courses
+                </h3>
+
+                @if (Model.CourseResults?.Any() == true)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Course Title</th>
+                                    <th>Instructor</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var courseResult in Model.CourseResults)
+                                {
+                                    <tr>
+                                        <td>@courseResult.Course?.Title</td>
+                                        <td>@courseResult.Course?.Instructor?.Name</td>
+                                        <td>
+                                            <form asp-controller="CourseResult" asp-action="DeleteStudent" method="post" class="d-inline">
+                                                <input type="hidden" name="CourseId" value="@courseResult.CourseId" />
+                                                <input type="hidden" name="traineeId" value="@Model.Id" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('Are you sure you want to remove this trainee from @courseResult.Course?.Title?');">
+                                                    <i class="fas fa-user-minus"></i> Remove
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle me-3"></i>
+                            <div>
+                                <p class="mb-0">This trainee is not enrolled in any courses.</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Enroll in New Course -->
+            @if (ViewBag.Courses?.Count > 0)
+            {
+                <div class="mb-4">
+                    <h3 class="h5 mb-3">
+                        <i class="fas fa-plus-circle me-2 text-success"></i>Enroll in New Course
+                    </h3>
+
+                    <form asp-action="Enroll" method="post" class="needs-validation" novalidate>
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-book-open me-2 text-primary"></i>Select Course
+                            </label>
+                            <select name="courseId" class="form-select form-select-lg" required>
+                                <option value="" selected disabled>-- Select Course --</option>
+                                @foreach (var course in ViewBag.Courses)
+                                {
+                                    <option value="@course.Id">
+                                        @course.Title - @course.Instructor?.Name (@course.CreditHours credits)
+                                    </option>
+                                }
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a course
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary px-4">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="fas fa-user-plus me-2"></i>Enroll
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-3"></i>
+                        <div>
+                            <h5 class="alert-heading">No Available Courses</h5>
+                            <p class="mb-0">This trainee is already enrolled in all available courses.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary px-4">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Trainee
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 0.75rem;
+        }
+
+        .card-header {
+            border-radius: 0 !important;
+        }
+
+        .fw-bold {
+            font-weight: 600;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-sm {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
+            transition: all 0.3s ease;
+        }
+    </style>
 }
-else
-{
-    <p class="text-warning">This trainee is already enrolled in all available courses.</p>
-    <a asp-action="Index"  class="btn btn-secondary">Back</a>
+
+@section Scripts {
+    <script>
+        // Bootstrap 5 validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 }

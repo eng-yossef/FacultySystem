@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using FacultySystem.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace FacultySystem.Controllers
 {
@@ -41,7 +42,7 @@ namespace FacultySystem.Controllers
         // GET: Trainee/Create
         public IActionResult Create()
         {
-            ViewBag.Departments = _context.Departments.ToList();
+            ViewBag.Departments = new SelectList(_context.Departments.ToList(), "Id", "Name");
             return View();
         }
 
@@ -67,7 +68,7 @@ namespace FacultySystem.Controllers
             var trainee = await _context.Trainees.FindAsync(id);
             if (trainee == null) return NotFound();
 
-            ViewBag.Departments = _context.Departments.ToList();
+            ViewBag.Departments = new SelectList(_context.Departments.ToList(),"Id","Name");
             return View(trainee);
         }
 

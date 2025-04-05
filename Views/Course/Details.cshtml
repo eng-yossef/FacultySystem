@@ -1,17 +1,184 @@
 ﻿@model FacultySystem.Models.Course
+@{
+    ViewData["Title"] = "Course Details";
+}
 
-<h2>Course Details</h2>
+<div class="container py-5">
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">
+                    <i class="fas fa-book-open me-2"></i>@ViewData["Title"]
+                </h2>
+                <a asp-action="Index" class="btn btn-sm btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back to List
+                </a>
+            </div>
+        </div>
 
-<p><strong>Title:</strong> @Model.Title</p>
-<p><strong>Credit Hours:</strong> @Model.CreditHours</p>
-<p><strong>Instructor:</strong> @Model.Instructor.Name</p>
+        <!-- Card Body -->
+        <div class="card-body p-4">
+            <!-- Course Information -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-2">
+                        <h5 class="fw-bold mb-2">
+                            <i class="fas fa-heading me-2 text-primary"></i>Title
+                        </h5>
+                        <p class="mb-0">@Model.Title</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-2">
+                        <h5 class="fw-bold mb-2">
+                            <i class="fas fa-clock me-2 text-primary"></i>Credit Hours
+                        </h5>
+                        <p class="mb-0">@Model.CreditHours</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded-2">
+                        <h5 class="fw-bold mb-2">
+                            <i class="fas fa-chalkboard-teacher me-2 text-primary"></i>Instructor
+                        </h5>
+                        <p class="mb-0">@Model.Instructor?.Name</p>
+                    </div>
+                </div>
+            </div>
 
-<h3>Enrolled Trainees</h3>
-<ul>
-    @foreach (var result in Model.CourseResults)
+            <!-- Enrolled Trainees -->
+            <div class="mt-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3 class="h5 mb-0">
+                        <i class="fas fa-users me-2"></i>Enrolled Trainees
+                    </h3>
+                    <a asp-action="AddStudent" asp-route-id="@Model.Id" class="btn btn-sm btn-success">
+                        <i class="fas fa-user-plus me-1"></i>Add Trainee
+                    </a>
+                </div>
+
+                @if (Model.CourseResults?.Any() == true)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Trainee Name</th>
+                                    <th>Department</th>
+                                    <th>Grade</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var result in Model.CourseResults)
+                                {
+                                    <tr>
+                                        <td>@result.Trainee?.Name</td>
+                                        <td>@result.Trainee?.Department?.Name</td>
+                                        <td>
+                                            <span class="badge @GetGradeBadgeClass((result.Grade).ToString())">
+                                                @result.Grade
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <a asp-controller="CourseResult" asp-action="EditGrade"
+                                                   asp-route-courseId="@result.CourseId"
+                                                   asp-route-traineeId="@result.TraineeId"
+                                                   class="btn btn-sm btn-outline-primary" title="Edit Grade">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+
+                                                <form asp-controller="CourseResult" asp-action="DeleteStudent" method="post">
+                                                    <input type="hidden" name="TraineeId" value="@result.TraineeId" />
+                                                    <input type="hidden" name="courseId" value="@Model.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                            title="Remove from Course"
+                                                            onclick="return confirm('Are you sure you want to remove @result.Trainee?.Name from this course?');">
+                                                        <i class="fas fa-user-minus"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-info-circle me-3 fa-2x"></i>
+                            <div>
+                                <h5 class="alert-heading mb-2">No Enrolled Trainees</h5>
+                                <p class="mb-0">There are currently no trainees enrolled in this course.</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Courses
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetGradeBadgeClass(string grade)
     {
-        <li>@result.Trainee.Name - Score: @result.Grade</li>
-    }
-</ul>
+        if (string.IsNullOrEmpty(grade)) return "bg-secondary";
 
-<a asp-action="Index" class="btn btn-secondary">Back</a>
+        if (double.TryParse(grade, out var numericGrade))
+        {
+            return numericGrade >= 85 ? "bg-success" :
+                   numericGrade >= 70 ? "bg-primary" :
+                   numericGrade >= 50 ? "bg-warning" : "bg-danger";
+        }
+        return "bg-secondary";
+    }
+}
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 0.75rem;
+        }
+
+        .card-header {
+            border-radius: 0 !important;
+        }
+
+        .fw-bold {
+            font-weight: 600;
+        }
+
+        .badge {
+            font-size: 0.85rem;
+            padding: 0.35em 0.65em;
+            min-width: 50px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        // Any additional scripts can be added here
+    </script>
+}

@@ -1,32 +1,139 @@
 ﻿@model FacultySystem.Models.Course
+@{
+    ViewData["Title"] = "Enroll Student";
+}
 
-<h2>Add Student to Course</h2>
-
-<p><strong>Course Title:</strong> @Model.Title</p>
-<p><strong>Credit Hours:</strong> @Model.CreditHours</p>
-
-@if (ViewBag.Trainees.Count > 0)
-{
-    <h3>Select a Student</h3>
-    <form asp-action="AddStudent" method="post">
-        <input type="hidden" name="id" value="@Model.Id" />
-
-        <div class="form-group">
-            <label>Select a Trainee:</label>
-            <select name="traineeId" class="form-control">
-                @foreach (var trainee in ViewBag.Trainees)
-                {
-                    <option value="@trainee.Id">@trainee.Name</option>
-                }
-            </select>
+<div class="container py-4">
+    <div class="card border-0 shadow rounded-3 overflow-hidden">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">
+                    <i class="fas fa-user-plus me-2"></i>@ViewData["Title"]
+                </h2>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Course
+                </a>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Student</button>
-        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
-    </form>
+        <!-- Card Body -->
+        <div class="card-body p-4">
+            <!-- Course Info -->
+            <div class="mb-4 p-3 bg-light rounded-2">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-1">
+                            <i class="fas fa-book me-2 text-primary"></i>Course Title
+                        </h5>
+                        <p class="mb-3">@Model.Title</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="fw-bold mb-1">
+                            <i class="fas fa-clock me-2 text-primary"></i>Credit Hours
+                        </h5>
+                        <p class="mb-0">@Model.CreditHours</p>
+                    </div>
+                </div>
+            </div>
+
+            @if (ViewBag.Trainees.Count > 0)
+            {
+                <div class="mt-4">
+                    <h4 class="mb-3">
+                        <i class="fas fa-users me-2"></i>Available Trainees
+                    </h4>
+
+                    <form asp-action="AddStudent" method="post" class="needs-validation" novalidate>
+                        <input type="hidden" name="id" value="@Model.Id" />
+
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-user-graduate me-2 text-primary"></i>Select Trainee
+                            </label>
+                            <select name="traineeId" class="form-select form-select-lg" required>
+                                <option value="" selected disabled>-- Select a trainee --</option>
+                                @foreach (var trainee in ViewBag.Trainees)
+                                {
+                                    <option value="@trainee.Id">
+                                        @trainee.Name
+                                        <span class="text-muted">(@trainee.Department?.Name)</span>
+                                    </option>
+                                }
+                            </select>
+                            <div class="invalid-feedback">
+                                Please select a trainee
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary px-4">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="fas fa-user-plus me-2"></i>Enroll Student
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning mt-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle me-3 fa-2x"></i>
+                        <div>
+                            <h5 class="alert-heading mb-2">No Available Trainees</h5>
+                            <p class="mb-0">All trainees are already enrolled in this course.</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Course Details
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 0.75rem;
+        }
+
+        .card-header {
+            border-radius: 0 !important;
+        }
+
+        .fw-semibold {
+            font-weight: 500;
+        }
+
+        select.form-select-lg {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+    </style>
 }
-else
-{
-    <p class="text-warning">All trainees are already enrolled in this course.</p>
-    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Back</a>
+
+@section Scripts {
+    <script>
+        // Bootstrap 5 validation
+        (function () {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
 }
