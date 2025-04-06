@@ -27,5 +27,12 @@ namespace FacultySystem.Models
 
         // One-to-Many: Instructor teaches multiple Courses
         public ICollection<Course>? Courses { get; set; }
+
+        // 🔗 One-to-One with ApplicationUser
+        //[Required]
+        public string? UserId { get; set; } = string.Empty;
+
+        [ForeignKey("UserId")]
+        public ApplicationUser? User { get; set; }
     }
 }

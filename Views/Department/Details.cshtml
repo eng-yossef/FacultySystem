@@ -37,7 +37,7 @@
                     <h3 class="h5 mb-0">
                         <i class="fas fa-chalkboard-teacher me-2"></i>Instructors
                     </h3>
-                    <a asp-controller="Instructor" asp-action="Create" class="btn btn-sm btn-success">
+                    <a asp-controller="Department" asp-action="AddInstructor" asp-route-departmentId=@Model.Id class="btn btn-sm btn-success">
                         <i class="fas fa-plus me-1"></i>Add Instructor
                     </a>
                 </div>
@@ -96,7 +96,7 @@
                     <h3 class="h5 mb-0">
                         <i class="fas fa-users me-2"></i>Trainees
                     </h3>
-                    <a asp-controller="Trainee" asp-action="Create" class="btn btn-sm btn-success">
+                    <a asp-controller="Department" asp-action="AddTrainee" asp-route-departmentId=@Model.Id class="btn btn-sm btn-success">
                         <i class="fas fa-plus me-1"></i>Add Trainee
                     </a>
                 </div>

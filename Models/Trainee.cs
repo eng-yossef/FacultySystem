@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FacultySystem.Models
@@ -20,6 +20,13 @@ namespace FacultySystem.Models
 
         // Many-to-Many relationship with Course via CourseResult
         public ICollection<CourseResult> ? CourseResults { get; set; }
+
+        // 🔗 One-to-One with ApplicationUser
+        //[Required]
+        public string? UserId { get; set; } = string.Empty;
+
+        [ForeignKey("UserId")]
+        public ApplicationUser? User { get; set; }
     }
 
 }

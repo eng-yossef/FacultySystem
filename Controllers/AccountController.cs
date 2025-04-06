@@ -1,7 +1,10 @@
 ﻿using FacultySystem.Models;
 using FacultySystem.ViewModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace FacultySystem.Controllers
@@ -10,34 +13,157 @@ namespace FacultySystem.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly FacultyDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+
+        public AccountController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            FacultyDbContext context,
+            IWebHostEnvironment webHostEnvironment
+         )     
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _context = context;
+            _webHostEnvironment = webHostEnvironment;
+
         }
 
         // GET: Register
-        public IActionResult Register() => View();
+        [HttpGet]
+        public async Task<IActionResult> Register()
+        {
+            ViewBag.Departments = await _context.Departments
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                })
+                .ToListAsync();
 
+            return View();
+        }
         // POST: Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model, IFormFile? imageFile)
         {
-            if (!ModelState.IsValid) return View(model);
-
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
+            if (!ModelState.IsValid)
             {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+                // Repopulate departments dropdown if validation fails
+                ViewBag.Departments = await GetDepartments();
+                return View(model);
             }
 
-            foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
-            return View(model);
+            // Create the base user
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                ViewBag.Departments = await GetDepartments();
+                return View(model);
+            }
+
+            // Add user to role
+            var roleResult = await _userManager.AddToRoleAsync(user, model.Role);
+
+            if (!roleResult.Succeeded)
+            {
+                foreach (var error in roleResult.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                ViewBag.Departments = await GetDepartments();
+                return View(model);
+            }
+
+            // Handle role-specific data
+            if (model.Role == "Instructor")
+            {
+                var instructor = new Instructor
+                {
+                    Name = model.FullName,
+                    Specialization = model.Specialization,
+                    DepartmentId = model.DepartmentId,
+                    UserId = user.Id
+                };
+
+                // Handle image upload
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    instructor.ImageUrl = await SaveImage(imageFile);
+                }
+
+                _context.Instructors.Add(instructor);
+            }
+            else if (model.Role == "Trainee")
+            {
+                var trainee = new Trainee
+                {
+                    Name = model.FullName,
+                    Age = model.Age, // We know Age has value because of validation
+                    DepartmentId = model.DepartmentId,
+                    UserId = user.Id
+                };
+
+                _context.Trainees.Add(trainee);
+            }
+
+            await _context.SaveChangesAsync();
+
+            // Sign in the user
+            await _signInManager.SignInAsync(user, isPersistent: false);
+
+            // Redirect based on role
+            return model.Role switch
+            {
+                "Instructor" => RedirectToAction("Index", "Home"),
+                "Trainee" => RedirectToAction("Index", "Home"),
+                _ => RedirectToAction("Index", "Home")
+            };
+        }
+
+        private async Task<List<SelectListItem>> GetDepartments()
+        {
+            return await _context.Departments
+                .Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Name
+                })
+            .ToListAsync();
+        }
+
+        private async Task<string> SaveImage(IFormFile imageFile)
+        {
+            if (imageFile != null && imageFile.Length > 0)
+            {
+                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath ?? "wwwroot", "images");
+                Directory.CreateDirectory(uploadsFolder);
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(imageFile.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                }
+
+              return "/images/" + uniqueFileName;
+            }
+
+            return null;
         }
 
         // GET: Login
@@ -100,5 +226,8 @@ namespace FacultySystem.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        public IActionResult AccessDenied() => View();
+        
     }
 }

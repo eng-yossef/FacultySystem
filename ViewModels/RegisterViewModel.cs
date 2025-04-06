@@ -19,5 +19,18 @@ namespace FacultySystem.ViewModels
         [DataType(DataType.Password)]
         [Compare("Password")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        [Required]
+        public string Role { get; set; } = string.Empty;
+
+        public string? Specialization { get; set; } = string.Empty;
+        
+        //public string? ImageUrl { get; set; } = string.Empty;
+
+        public int Age { get; set; } = 0;
+
+        public int DepartmentId { get; set; } = 0;
+
+
     }
 }

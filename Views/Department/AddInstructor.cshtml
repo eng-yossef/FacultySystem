@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Instructor>
+
+@{
+    ViewData["Title"] = "Add Instructor to " + ViewBag.DepartmentName;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        No unassigned instructors available to add.
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var instructor in Model)
+            {
+                <tr>
+                    <td>@instructor.Name</td>
+                    <td>
+                        <form asp-action="AddInstructor" method="post">
+                            <input type="hidden" name="departmentId" value="@ViewBag.DepartmentId" />
+                            <input type="hidden" name="instructorId" value="@instructor.Id" />
+                            <button type="submit" class="btn btn-primary">Add to Department</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    <a asp-action="Details" asp-route-id="@ViewBag.DepartmentId" class="btn btn-secondary">Back to Department</a>
+</div>

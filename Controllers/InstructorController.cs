@@ -49,6 +49,7 @@ namespace FacultySystem.Controllers
         public IActionResult Create()
         {
             ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
+
             return View();
         }
 

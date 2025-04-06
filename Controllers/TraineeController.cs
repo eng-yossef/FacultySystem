@@ -4,6 +4,7 @@ using FacultySystem.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FacultySystem.Controllers
 {
@@ -24,6 +25,7 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Trainee/Details/5
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -40,6 +42,8 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Trainee/Create
+        [Authorize(Roles = "Admin")]
+
         public IActionResult Create()
         {
             ViewBag.Departments = new SelectList(_context.Departments.ToList(), "Id", "Name");
@@ -49,6 +53,8 @@ namespace FacultySystem.Controllers
         // POST: Trainee/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Create(Trainee trainee)
         {
             if (ModelState.IsValid)
@@ -61,6 +67,8 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Trainee/Edit/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -75,6 +83,8 @@ namespace FacultySystem.Controllers
         // POST: Trainee/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int id, Trainee trainee)
         {
             if (id != trainee.Id) return NotFound();
@@ -89,6 +99,8 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Trainee/Delete/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -105,6 +117,8 @@ namespace FacultySystem.Controllers
         // POST: Trainee/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var trainee = await _context.Trainees.FindAsync(id);
@@ -113,6 +127,7 @@ namespace FacultySystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Enroll(int? id)
         {
             if (id == null) return NotFound();
@@ -137,6 +152,8 @@ namespace FacultySystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Enroll(int id, int courseId)
         {
             var course = await _context.Courses.FindAsync(courseId);

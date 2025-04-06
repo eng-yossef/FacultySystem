@@ -37,7 +37,7 @@ namespace FacultySystem.Models
        .HasOne(cr => cr.Trainee)
        .WithMany(t => t.CourseResults)
        .HasForeignKey(cr => cr.TraineeId)
-       .OnDelete(DeleteBehavior.Restrict);  // Change from Cascade to Restrict
+       .OnDelete(DeleteBehavior.Cascade);  // Change from Cascade to Restrict
 
             modelBuilder.Entity<CourseResult>()
                 .HasOne(cr => cr.Course)
@@ -66,6 +66,11 @@ namespace FacultySystem.Models
       .HasForeignKey(c => c.InstructorId)
       .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<Instructor>()
+       .HasOne(i => i.User)
+       .WithOne(u => u.Instructor)
+       .HasForeignKey<Instructor>(i => i.UserId)
+       .OnDelete(DeleteBehavior.Cascade); // or SetNull
 
         }
     }

@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Access Denied";
+    Layout = "_Layout"; // Use your layout file
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card mt-5">
+                <div class="card-header bg-danger text-white">
+                    <h1 class="display-4"><i class="fas fa-ban"></i> Access Denied</h1>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h4><i class="fas fa-exclamation-triangle"></i> You don't have permission to access this resource.</h4>
+                    </div>
+
+                    <div class="mt-4">
+                        <img src="~/images/access-denied.svg" alt="Access Denied" class="img-fluid" style="max-height: 200px;" />
+                    </div>
+
+                    <p class="lead mt-4">
+                        If you believe this is an error, please contact your administrator.
+                    </p>
+
+                    <div class="mt-4">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Return to Home
+                        </a>
+                        <a href="mailto:yossefkhaled551@gmail.com" class="btn btn-outline-secondary ml-2">
+                            <i class="fas fa-envelope"></i> Contact Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            border-radius: 0.25rem 0.25rem 0 0 !important;
+        }
+    </style>
+}

@@ -56,6 +56,61 @@ namespace FacultySystem.Controllers
             return View(department);
         }
 
+
+        //Add Instructor to Department 
+
+        public IActionResult AddInstructor(int departmentId)
+        {
+            var department = _context.Departments.Find(departmentId);
+            if (department == null) return NotFound();
+
+            var instructors = _context.Instructors
+                .Where(i => i.DepartmentId == null)
+                .ToList();
+
+            ViewBag.DepartmentName = department.Name;
+            ViewBag.DepartmentId = departmentId;  
+
+            return View(instructors);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddInstructor(int departmentId, int instructorId)
+        {
+            var department = await _context.Departments.FindAsync(departmentId);
+            var instructor = await _context.Instructors.FindAsync(instructorId);
+            if (department == null || instructor == null) return NotFound();
+            instructor.DepartmentId = departmentId;
+            _context.Update(instructor);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { id = departmentId });
+        }
+
+
+        //Add Trainee to Department
+        public IActionResult AddTrainee(int departmentId)
+        {
+            var department = _context.Departments.Find(departmentId);
+            if (department == null) return NotFound();
+            var trainees = _context.Trainees
+                .Where(t => t.DepartmentId == null)
+                .ToList();
+            ViewBag.DepartmentName = department.Name;
+            ViewBag.DepartmentId = departmentId;
+            return View(trainees);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddTrainee(int departmentId, int traineeId)
+        {
+            var department = await _context.Departments.FindAsync(departmentId);
+            var trainee = await _context.Trainees.FindAsync(traineeId);
+            if (department == null || trainee == null) return NotFound();
+            trainee.DepartmentId = departmentId;
+            _context.Update(trainee);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Details), new { id = departmentId });
+        }
+
         // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
