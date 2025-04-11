@@ -1,87 +1,71 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FacultySystem.Models;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FacultySystem.Models;
+using FacultySystem.Services;
 using FacultySystem.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace FacultySystem.Controllers
 {
     [CustomActionFilter]
     [Authorize(Roles = "Admin")]
-
     public class CourseController : Controller
     {
+        private readonly ICourseService _courseService;
 
-        private readonly FacultyDbContext _context;
-
-        public CourseController(FacultyDbContext context)
+        public CourseController(ICourseService courseService)
         {
-            _context = context;
+            _courseService = courseService;
         }
 
-        // GET: Course (List all courses)
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var courses = await _context.Courses.Include(c => c.Instructor).ToListAsync();
-            return View(courses);
+            return View(await _courseService.GetAllCoursesAsync());
         }
 
-        // GET: Course/Details/5
         [AllowAnonymous]
-
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            var course = await _context.Courses
-                .Include(c => c.Instructor)
-                .Include(c => c.CourseResults)
-                .ThenInclude(cr => cr.Trainee)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var course = await _courseService.GetCourseDetailsAsync(id.Value);
             if (course == null) return NotFound();
 
             return View(course);
         }
 
-        // GET: Course/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewBag.Instructors = _context.Instructors.ToList();
+            ViewBag.Instructors = await _courseService.GetAllInstructorsAsync();
             return View();
         }
 
-        // POST: Course/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Course course)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
-                await _context.SaveChangesAsync();
+                await _courseService.CreateCourseAsync(course);
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Instructors = await _courseService.GetAllInstructorsAsync();
             return View(course);
         }
 
-        // GET: Course/Edit/5
         [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            var course = await _context.Courses.FindAsync(id);
+            var course = await _courseService.GetCourseByIdAsync(id.Value);
             if (course == null) return NotFound();
 
-            ViewBag.Instructors = _context.Instructors.ToList();
+            ViewBag.Instructors = await _courseService.GetAllInstructorsAsync();
             return View(course);
         }
 
-        // POST: Course/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Instructor")]
@@ -91,86 +75,56 @@ namespace FacultySystem.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Update(course);
-                await _context.SaveChangesAsync();
+                await _courseService.UpdateCourseAsync(course);
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Instructors = await _courseService.GetAllInstructorsAsync();
             return View(course);
         }
 
-        // GET: Course/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var course = await _context.Courses
-                .Include(c => c.Instructor)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+            var course = await _courseService.GetCourseDetailsAsync(id.Value);
             if (course == null) return NotFound();
 
             return View(course);
         }
 
-        // POST: Course/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var course = await _context.Courses.FindAsync(id);
-            _context.Courses.Remove(course);
-            await _context.SaveChangesAsync();
+            await _courseService.DeleteCourseAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        //add student to course
         public async Task<IActionResult> AddStudent(int? id)
         {
             if (id == null) return NotFound();
 
-            var course = await _context.Courses
-                .Include(c => c.CourseResults)
-                .ThenInclude(cr => cr.Trainee)
-                .FirstOrDefaultAsync(c => c.Id == id);
-
+            var course = await _courseService.GetCourseDetailsAsync(id.Value);
             if (course == null) return NotFound();
 
-            // Get trainees who are NOT in this course
-            var enrolledTraineeIds = course.CourseResults.Select(cr => cr.TraineeId).ToList();
-            var availableTrainees = _context.Trainees.Where(t => !enrolledTraineeIds.Contains(t.Id)).ToList();
-
-            ViewBag.Trainees = availableTrainees;
+            ViewBag.Trainees = await _courseService.GetAvailableTraineesAsync(id.Value);
             return View(course);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddStudent(int id, int traineeId)
         {
-            var course = await _context.Courses.FindAsync(id);
-            var trainee = await _context.Trainees.FindAsync(traineeId);
-            if (course == null || trainee == null) return NotFound();
-            var courseResult = new CourseResult { CourseId = id, TraineeId = traineeId };
-            _context.CourseResults.Add(courseResult);
-            await _context.SaveChangesAsync();
+            await _courseService.AddTraineeToCourseAsync(id, traineeId);
             return RedirectToAction(nameof(Details), new { id });
         }
 
-
-        //delete student from course
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteStudent(int courseId, int traineeId)
         {
-            var courseResult = await _context.CourseResults
-                .FirstOrDefaultAsync(cr => cr.CourseId == courseId && cr.TraineeId == traineeId);
-            if (courseResult != null)
-            {
-                _context.CourseResults.Remove(courseResult);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Details), new { id = courseId });    
+            await _courseService.RemoveTraineeFromCourseAsync(courseId, traineeId);
+            return RedirectToAction(nameof(Details), new { id = courseId });
         }
-        }
+    }
 }

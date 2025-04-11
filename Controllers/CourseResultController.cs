@@ -1,45 +1,37 @@
-﻿using FacultySystem.Models;
+﻿using FacultySystem.Services;
+using FacultySystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using System.Threading.Tasks;
 
 namespace FacultySystem.Controllers
 {
     public class CourseResultController : Controller
     {
-        private readonly FacultyDbContext _context;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public CourseResultController(FacultyDbContext context, IWebHostEnvironment webHostEnvironment)
+        private readonly ICourseResultService _courseResultService;
+
+        public CourseResultController(ICourseResultService courseResultService)
         {
-            _context = context;
-            _webHostEnvironment = webHostEnvironment;
+            _courseResultService = courseResultService;
         }
+
         public IActionResult Index()
         {
             return View();
         }
 
-        //delete student from course
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteStudent(int courseId, int traineeId)
         {
-            var courseResult = await _context.CourseResults
-                .FirstOrDefaultAsync(cr => cr.CourseId == courseId && cr.TraineeId == traineeId);
-            if (courseResult != null)
-            {
-                _context.CourseResults.Remove(courseResult);
-                await _context.SaveChangesAsync();
-            }
+            await _courseResultService.RemoveStudentFromCourseAsync(courseId, traineeId);
             return RedirectToAction(nameof(Details), "Course", new { id = courseId });
         }
 
-        //Edit Grade
-
-        public IActionResult EditGrade(int courseId, int traineeId)
+        public async Task<IActionResult> EditGrade(int courseId, int traineeId)
         {
-            var courseResult = _context.CourseResults.Include(cr => cr.Course).Include(cr => cr.Trainee)
-                .FirstOrDefault(cr => cr.CourseId == courseId && cr.TraineeId == traineeId);
+            var courseResult = await _courseResultService.GetCourseResultAsync(courseId, traineeId);
             if (courseResult == null)
             {
                 return NotFound();
@@ -51,14 +43,7 @@ namespace FacultySystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditGrade(int courseId, int traineeId, float newGrade)
         {
-            var courseResult = await _context.CourseResults
-                .FirstOrDefaultAsync(cr => cr.CourseId == courseId && cr.TraineeId == traineeId);
-            if (courseResult != null)
-            {
-                courseResult.Grade = newGrade;
-                _context.Update(courseResult);
-                await _context.SaveChangesAsync();
-            }
+            await _courseResultService.UpdateGradeAsync(courseId, traineeId, newGrade);
             return RedirectToAction(nameof(Details), "Course", new { id = courseId });
         }
     }

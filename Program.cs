@@ -1,4 +1,6 @@
+using FacultySystem.Data.Repositories;
 using FacultySystem.Models;
+using FacultySystem.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +11,9 @@ namespace FacultySystem
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            // Add services to the container.
+
+
 
             // Add DbContext with connection string from appsettings.json
             builder.Services.AddDbContext<FacultyDbContext>(options =>
@@ -32,6 +37,45 @@ namespace FacultySystem
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+
+
+
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+
+            // Add services to the container.
+            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
+
+
+            // Add services to the container
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<ICourseService, CourseService>();
+
+
+
+            // Add services to the container
+            builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+
+
+
+            // Add services to the container
+            builder.Services.AddScoped<ICourseResultRepository, CourseResultRepository>();
+            builder.Services.AddScoped<ICourseResultService, CourseResultService>();
+
+
+            // Add services to the container
+            builder.Services.AddScoped<IInstructorRepository, InstructorRepository>();
+            builder.Services.AddScoped<IImageRepository, ImageRepository>();
+            builder.Services.AddScoped<IInstructorService, InstructorService>();
+
+
+            // Add services to the container
+            builder.Services.AddScoped<ITraineeRepository, TraineeRepository>();
+            builder.Services.AddScoped<ITraineeService, TraineeService>();
 
             var app = builder.Build();
 
