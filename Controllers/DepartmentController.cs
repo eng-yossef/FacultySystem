@@ -3,9 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FacultySystem.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FacultySystem.Controllers
 {
+    [Authorize(Roles = "Admin,Instructor,Trainee")]
     public class DepartmentController : Controller
     {
         private readonly FacultyDbContext _context;
@@ -16,6 +18,7 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Departments (List all Departments)
+
         public async Task<IActionResult> Index()
         {
             return View(await _context.Departments.ToListAsync());
@@ -37,6 +40,8 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Departments/Create
+        [Authorize(Roles = "Admin")]
+
         public IActionResult Create()
         {
             return View();
@@ -45,6 +50,8 @@ namespace FacultySystem.Controllers
         // POST: Departments/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Create([Bind("Name")] Department department)
         {
             if (ModelState.IsValid)
@@ -58,6 +65,7 @@ namespace FacultySystem.Controllers
 
 
         //Add Instructor to Department 
+        [Authorize(Roles = "Admin")]
 
         public IActionResult AddInstructor(int departmentId)
         {
@@ -75,6 +83,9 @@ namespace FacultySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> AddInstructor(int departmentId, int instructorId)
         {
             var department = await _context.Departments.FindAsync(departmentId);
@@ -88,6 +99,8 @@ namespace FacultySystem.Controllers
 
 
         //Add Trainee to Department
+        [Authorize(Roles = "Admin")]
+
         public IActionResult AddTrainee(int departmentId)
         {
             var department = _context.Departments.Find(departmentId);
@@ -100,6 +113,8 @@ namespace FacultySystem.Controllers
             return View(trainees);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> AddTrainee(int departmentId, int traineeId)
         {
             var department = await _context.Departments.FindAsync(departmentId);
@@ -112,6 +127,8 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Departments/Edit/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -125,6 +142,8 @@ namespace FacultySystem.Controllers
         // POST: Departments/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Department department)
         {
             if (id != department.Id) return NotFound();
@@ -149,6 +168,8 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Departments/Delete/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -164,6 +185,8 @@ namespace FacultySystem.Controllers
         // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var department = await _context.Departments.FindAsync(id);

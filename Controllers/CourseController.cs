@@ -30,6 +30,8 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Course/Details/5
+        [AllowAnonymous]
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
@@ -67,6 +69,7 @@ namespace FacultySystem.Controllers
         }
 
         // GET: Course/Edit/5
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -81,6 +84,7 @@ namespace FacultySystem.Controllers
         // POST: Course/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> Edit(int id, Course course)
         {
             if (id != course.Id) return NotFound();
