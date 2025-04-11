@@ -22,6 +22,23 @@ namespace FacultySystem.Controllers
 
         }
 
+        public IActionResult checkName(string name) {
+
+            //if (name.Length > 4) { 
+
+            //    return Json(true);
+            //}
+
+            //return Json(false);
+
+            //add custom validation
+
+          return Json(true);
+
+
+
+        }
+
         // GET: Instructor (List of Instructors)
         [AllowAnonymous]
         public async Task<IActionResult> Index()
